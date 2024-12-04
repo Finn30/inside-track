@@ -19,7 +19,7 @@ public class GameplayPanel extends JPanel implements Runnable {
         this.horses = race.getRunners(); // Ambil daftar kuda
 
         // Load gambar background
-        ImageIcon icon = new ImageIcon("C:/Users/gusbr/OneDrive/Gambar/Cool Yeah/Semester 5/PBO/Praktikum/Project/inside-track/assets/img/background.png");
+        ImageIcon icon = new ImageIcon("assets/img/background.png");
         backgroundImage = icon.getImage();
     }
 
@@ -36,15 +36,25 @@ public class GameplayPanel extends JPanel implements Runnable {
             g.drawImage(backgroundImage, xPosition + panelWidth, 0, panelWidth, panelHeight, null);
         }
 
-        // Gambar kuda-kuda dan jaraknya
+        // Looping gambar kuda
+        int frameCount = 12; // Jumlah frame gambar kuda
+        int frameIndex = (int) ((System.currentTimeMillis() / 50) % frameCount); // Hitung frame index berdasarkan waktu
+
         for (Horse horse : horses) {
             int horseX = (int) (horse.getDistance() * getWidth() / Race.RACE_LENGTH);
-            int horseY = 220 + horses.indexOf(horse) * 60; // Atur Y berdasarkan nomor kuda
-            g.setColor(Color.RED); // Gambar kuda dengan warna merah
-            g.fillOval(horseX, horseY, 30, 30); // Gambar kuda sebagai lingkaran
-            // Menampilkan jarak kuda
-            g.setColor(Color.BLACK);
-            g.drawString(horse.getDistance() + " m", horseX, horseY - 10); // Menampilkan jarak kuda di atasnya
+            int horseY = 140 + horses.indexOf(horse) * 60; // Atur Y berdasarkan nomor kuda
+
+            // Load gambar kuda berdasarkan frame index
+            ImageIcon horseIcon = new ImageIcon("./assets/horse-running/horse/" + (frameIndex + 1) + ".png");
+            Image horseImage = horseIcon.getImage();
+
+            // Gambar kuda sebagai gambar
+            g.drawImage(horseImage, horseX, horseY, 150, 150, null);
+
+            // Hentikan loop jika kuda pertama sudah mencapai akhir frame
+            if (horses.get(0).getDistance() >= Race.RACE_LENGTH) {
+                raceFinished = true;
+            }
         }
     }
 
