@@ -19,7 +19,7 @@ public class GameplayPanel extends JPanel implements Runnable {
         this.horses = race.getRunners(); // Ambil daftar kuda
 
         // Load gambar background
-        ImageIcon icon = new ImageIcon("C:/Users/gusbr/OneDrive/Gambar/Cool Yeah/Semester 5/PBO/Praktikum/Project/inside-track/assets/img/background.png");
+        ImageIcon icon = new ImageIcon("/assets/img/background.png");
         backgroundImage = icon.getImage();
     }
 
