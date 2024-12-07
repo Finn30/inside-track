@@ -1,7 +1,6 @@
 public class Horse {
 
-	private int distance;
-	private int handicap;
+	private int distance, handicap;
 	
 	private String name;
 	
@@ -38,7 +37,6 @@ public class Horse {
 	}
 	
 	public double getRaceComplete() {
-		
 		return (double)distance / 10000;
 	}
 

@@ -1,37 +1,39 @@
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Color;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.util.List;
+import java.awt.image.BufferedImage; // Add this import
+
 
 public class GameplayPanel extends JPanel implements Runnable {
     private Image backgroundImage;
     private int xPosition; // Posisi X gambar
-    private int moveSpeed = 3; // Kecepatan pergerakan gambar
-    private boolean startAnimation = false; // Flag untuk memulai animasi
-    private boolean raceFinished = false; // Flag untuk mengetahui apakah balapan selesai
-    private Race race; // Referensi ke objek Race
-    private List<Horse> horses; // List kuda
+    private int moveSpeed = 3; 
+    private boolean startAnimation = false; 
+    private boolean raceFinished = false; 
+    private Race race; 
+    private List<Horse> horses; 
+    private RacePanel racePanel; 
 
-    public GameplayPanel(Race race) {
+    public GameplayPanel(Race race, RacePanel racePanel) {
         this.race = race;
-        this.horses = race.getRunners(); // Ambil daftar kuda
+        this.horses = race.getRunners(); 
+        this.racePanel = racePanel; 
 
         // Load gambar background
-        ImageIcon icon = new ImageIcon("C:/Users/gusbr/OneDrive/Gambar/Cool Yeah/Semester 5/PBO/Praktikum/Project/inside-track/assets/img/background.png");
+        ImageIcon icon = new ImageIcon("background.png");
         backgroundImage = icon.getImage();
     }
 
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         if (backgroundImage != null) {
-            // Gambar background hanya jika balapan belum selesai
             int panelWidth = getWidth();
             int panelHeight = getHeight();
 
-            // Gambar dua kali untuk looping (efek infinite scroll)
             g.drawImage(backgroundImage, xPosition, 0, panelWidth, panelHeight, null);
             g.drawImage(backgroundImage, xPosition + panelWidth, 0, panelWidth, panelHeight, null);
         }
@@ -39,14 +41,18 @@ public class GameplayPanel extends JPanel implements Runnable {
         // Gambar kuda-kuda dan jaraknya
         for (Horse horse : horses) {
             int horseX = (int) (horse.getDistance() * getWidth() / Race.RACE_LENGTH);
-            int horseY = 220 + horses.indexOf(horse) * 60; // Atur Y berdasarkan nomor kuda
-            g.setColor(Color.RED); // Gambar kuda dengan warna merah
-            g.fillOval(horseX, horseY, 30, 30); // Gambar kuda sebagai lingkaran
-            // Menampilkan jarak kuda
-            g.setColor(Color.BLACK);
-            g.drawString(horse.getDistance() + " m", horseX, horseY - 10); // Menampilkan jarak kuda di atasnya
+            int horseY = 50 + horses.indexOf(horse) * 70; 
+
+            int animStep = (int) (horse.getDistance() / Race.RACE_LENGTH * 12); 
+            BufferedImage horseImage = racePanel.getImage(animStep);
+
+            // Gambar kuda dengan gambar dari RacePanel
+            if (horseImage != null) {
+                g.drawImage(horseImage, horseX, horseY, horseImage.getWidth(), horseImage.getHeight(), null);
+            }
         }
     }
+
 
     // Method untuk memulai animasi dan balapan
     public void startAnimation() {
@@ -75,6 +81,9 @@ public class GameplayPanel extends JPanel implements Runnable {
                 if (xPosition <= -getWidth()) {
                     xPosition = 0;
                 }
+
+                // Memanggil stepAnimation untuk memperbarui langkah animasi setiap frame
+                racePanel.stepAnimation(); // Memperbarui langkah animasi setiap frame
             }
 
             // Repaint panel untuk memperbarui tampilan
