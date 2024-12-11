@@ -4,8 +4,10 @@ import java.awt.*;
 public class HorseRacingGame extends JFrame {
     public HorseRacingGame() {
         setTitle("Pacuan Kuda");
-        setSize(800, 600);
+        setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+        setLocationRelativeTo(null);
 
         // Membuat objek Race
         Race race = new Race();
