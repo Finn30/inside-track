@@ -4,61 +4,43 @@ import java.util.List;
 public class Race {
 
 	public static int RACE_LENGTH = 20000;
-
 	public static int NUMBER_OF_RUNNERS = 5;
-
 	private int DELAY = 25;
-
 	private List<Horse> runners = new ArrayList<Horse>();
-
 	private RaceListener listener;
 
-	/**
-	 * Construct the race object and add the runners to the array
-	 * of horses.
-	 */
 	public Race() {
 		for (int i = 0; i < NUMBER_OF_RUNNERS; i++) {
-			runners.add(new Horse(String.valueOf(i)));
+			runners.add(new Horse("Horse " + (i + 1)));
 		}
 	}
 
-	/**
-	 * Reset the race back to the start.
-	 */
-	public void reset() {
-		for (Horse horse : runners) {
-			horse.reset();
-		}
+	public void setListener(RaceListener listener) {
+		this.listener = listener;
 	}
 
-	/**
-	 * Run the race and return the winner.
-	 * 
-	 * @return
-	 */
 	public Horse race() {
-
 		Horse winner = getWinner();
 		while (winner == null) {
-
 			try {
 				Thread.sleep(DELAY);
 			} catch (InterruptedException e) {
 			}
-
 			for (Horse runner : runners) {
 				runner.run();
 			}
-
 			if (listener != null) {
-				listener.notifyRaceProgress();
+				listener.notifyRaceProgress(); // Notify race progress (optional)
 			}
-
 			winner = getWinner();
 		}
-		return winner;
 
+		// Notify when the race is finished and the winner is found
+		if (listener != null && winner != null) {
+			listener.notifyStatus(winner.getName() + " Wins!");
+		}
+
+		return winner;
 	}
 
 	public Horse getWinner() {
@@ -72,10 +54,6 @@ public class Race {
 
 	public List<Horse> getRunners() {
 		return runners;
-	}
-
-	public void setListener(RaceListener listener) {
-		this.listener = listener;
 	}
 
 }

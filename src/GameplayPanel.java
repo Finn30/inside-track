@@ -1,25 +1,36 @@
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.util.List;
 
-public class GameplayPanel extends JPanel implements Runnable {
+public class GameplayPanel extends JPanel implements Runnable, RaceListener {
     private Image backgroundImage;
     private int xPosition; // Posisi X gambar
     private int moveSpeed = 3; // Kecepatan pergerakan gambar
     private boolean startAnimation = false; // Flag untuk memulai animasi
     private boolean raceFinished = false; // Flag untuk mengetahui apakah balapan selesai
+
     private Race race; // Referensi ke objek Race
     private List<Horse> horses; // List kuda
+    private JLabel statusLabel;
 
     public GameplayPanel(Race race) {
         this.race = race;
         this.horses = race.getRunners(); // Ambil daftar kuda
+        this.race.setListener(this); // Set panel ini sebagai listener
 
         // Load gambar background
         ImageIcon icon = new ImageIcon("assets/img/background2.jpg");
         backgroundImage = icon.getImage();
+
+        // Create status label to show winner
+        statusLabel = new JLabel("", JLabel.CENTER);
+        statusLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        statusLabel.setForeground(Color.RED);
+        statusLabel.setPreferredSize(new Dimension(800, 50));
+        add(statusLabel, BorderLayout.NORTH);
     }
 
     protected void paintComponent(Graphics g) {
@@ -98,5 +109,15 @@ public class GameplayPanel extends JPanel implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void notifyRaceProgress() {
+    }
+
+    public void notifyStatus(String status) {
+        statusLabel.setText(status);
+
+        JOptionPane.showMessageDialog(this, "Kuda yang menang: " + status, "Pemenang Balapan",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 }

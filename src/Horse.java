@@ -39,7 +39,6 @@ public class Horse {
 	}
 
 	public double getRaceComplete() {
-
 		return (double) distance / 5000;
 	}
 
