@@ -3,65 +3,49 @@ import java.util.List;
 
 public class Race {
 
-	public static int RACE_LENGTH = 10000;
-	
+	public static int RACE_LENGTH = 20000;
 	public static int NUMBER_OF_RUNNERS = 5;
-
 	private int DELAY = 25;
-	
 	private List<Horse> runners = new ArrayList<Horse>();
-	
 	private RaceListener listener;
-	
-	/**
-	 * Construct the race object and add the runners to the array
-	 * of horses.
-	 */
+
 	public Race() {
-		for(int i=0; i<NUMBER_OF_RUNNERS; i++) {
-			runners.add(new Horse(String.valueOf(i)));
+		for (int i = 0; i < NUMBER_OF_RUNNERS; i++) {
+			runners.add(new Horse("Horse " + (i + 1)));
 		}
 	}
-	
-	/**
-	 * Reset the race back to the start.
-	 */
-	public void reset() {
-		for(Horse horse : runners) {
-			horse.reset();
-		}
+
+	public void setListener(RaceListener listener) {
+		this.listener = listener;
 	}
-	
-	/**
-	 * Run the race and return the winner.
-	 * @return
-	 */
+
 	public Horse race() {
-		
 		Horse winner = getWinner();
-		while(winner == null) {
-			
+		while (winner == null) {
 			try {
 				Thread.sleep(DELAY);
-			} catch(InterruptedException e) {}
-			
-			for(Horse runner : runners) {
+			} catch (InterruptedException e) {
+			}
+			for (Horse runner : runners) {
 				runner.run();
 			}
-			
-			if(listener != null) {
-				listener.notifyRaceProgress();
+			if (listener != null) {
+				listener.notifyRaceProgress(); // Notify race progress (optional)
 			}
-			
 			winner = getWinner();
 		}
+
+		// Notify when the race is finished and the winner is found
+		// if (listener != null && winner != null) {
+		// listener.notifyStatus(winner.getName() + " Wins!");
+		// }
+
 		return winner;
-		
 	}
-	
+
 	public Horse getWinner() {
-		for(Horse horse : runners) {
-			if(horse.getDistance() > RACE_LENGTH) {
+		for (Horse horse : runners) {
+			if (horse.getDistance() > RACE_LENGTH) {
 				return horse;
 			}
 		}
@@ -72,10 +56,10 @@ public class Race {
 		return runners;
 	}
 
-	public void setListener(RaceListener listener) {
-		this.listener = listener;
+	public List<Horse> getTopFinishers() {
+		// Urutkan berdasarkan distance dalam urutan menurun
+		runners.sort((h1, h2) -> Integer.compare(h2.getDistance(), h1.getDistance()));
+		return runners.subList(0, Math.min(3, runners.size())); // Ambil 3 kuda teratas
 	}
-	
-	
-	
+
 }
