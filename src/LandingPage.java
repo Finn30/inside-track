@@ -66,7 +66,7 @@ public class LandingPage extends JPanel {
                 JOptionPane.showMessageDialog(this, "Silakan pasang taruhan terlebih dahulu sebelum memulai balapan.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;  // Prevent the game from starting if the bet is not placed
             }
-
+            
             try {
                 double betAmount = Double.parseDouble(betField.getText());
                 if (betAmount <= 0 || betAmount > balance) {
@@ -77,16 +77,17 @@ public class LandingPage extends JPanel {
                 JOptionPane.showMessageDialog(this, "Masukkan jumlah taruhan yang valid.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
+            
             // Reset the game
             gameplayPanel.resetGame();
-
+            
             // Switch to the gameplay panel
             CardLayout cl = (CardLayout) mainPanel.getLayout();
             cl.show(mainPanel, "Gameplay");
-
-            // Start the background animation after the gameplay panel is displayed
+            
             gameplayPanel.startAnimation(mainPanel);
+            isBetTerpasang = false;
+            betField.setText("");
         });
 
         // ActionListener for the place bet button

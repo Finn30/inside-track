@@ -31,6 +31,7 @@ public class ResultPanel extends JPanel {
         // Button untuk kembali ke menu utama
         JButton backButton = new JButton("Kembali ke Menu");
         backButton.addActionListener(e -> {
+            
             // Kembali ke halaman utama atau menu
             CardLayout cl = (CardLayout) getParent().getLayout();
             cl.show(getParent(), "Landing");
