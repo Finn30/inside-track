@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class HorseRacingGame extends JFrame {
     public HorseRacingGame() {
-        setTitle("Pacuan Kuda");
+        setTitle("Inside Track");
         setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);

@@ -17,10 +17,10 @@ public class LandingPage extends JPanel {
     public LandingPage(JPanel mainPanel, GameplayPanel gameplayPanel) {
         setLayout(new BorderLayout());
 
-        JLabel welcomeLabel = new JLabel("Selamat Datang di Game Pacuan Kuda!", JLabel.CENTER);
+        JLabel welcomeLabel = new JLabel("Welcome to Inside Track!", JLabel.CENTER);
         add(welcomeLabel, BorderLayout.CENTER);
 
-        JButton startButton = new JButton("Mulai");
+        JButton startButton = new JButton("Start Game");
         add(startButton, BorderLayout.SOUTH);
 
         startButton.addActionListener(e -> {
