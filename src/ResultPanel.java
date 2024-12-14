@@ -68,10 +68,17 @@ public class ResultPanel extends JPanel {
             for (Component comp : parent.getComponents()) {
                 if (comp instanceof GameplayPanel) {
                     ((GameplayPanel) comp).resetGame();
+                    ((GameplayPanel) comp).stopGameplayMusic();
                 }
             }
 
-            // Tampilkan LandingPage
+            for (Component comp : parent.getComponents()) {
+                if (comp instanceof LandingPage) {
+                    ((LandingPage) comp).playBackgroundMusic("assets/music/music-landingpage.wav"); // Putar ulang musik
+                }
+            }
+
+            // Tampilkan halaman utama
             CardLayout cl = (CardLayout) parent.getLayout();
             cl.show(parent, "Landing");
         });

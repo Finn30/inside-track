@@ -1,10 +1,8 @@
+import javax.sound.sampled.*;
+import javax.swing.*;
 import java.awt.*;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class GameplayPanel extends JPanel implements Runnable, RaceListener {
@@ -18,6 +16,8 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
     private Race race; // Referensi ke objek Race
     private List<Horse> horses; // List kuda
     private JLabel statusLabel;
+
+    private Clip gameplayMusicClip; // Clip untuk memutar musik gameplay
 
     public GameplayPanel(JPanel mainPanel, Race race) {
         this.mainPanel = mainPanel;
@@ -37,6 +37,45 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
         add(statusLabel, BorderLayout.NORTH);
     }
 
+    // Method untuk memutar musik gameplay
+    public void playGameplayMusic() {
+        Thread musicThread = new Thread(() -> {
+            try {
+                File musicFile = new File("assets/music/music-race.wav"); // Path ke musik gameplay
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(musicFile);
+
+                AudioFormat baseFormat = audioStream.getFormat();
+                AudioFormat decodedFormat = new AudioFormat(
+                        AudioFormat.Encoding.PCM_SIGNED,
+                        44100,
+                        16,
+                        baseFormat.getChannels(),
+                        baseFormat.getChannels() * 2,
+                        44100,
+                        false);
+
+                AudioInputStream decodedAudioStream = AudioSystem.getAudioInputStream(decodedFormat, audioStream);
+
+                gameplayMusicClip = AudioSystem.getClip();
+                gameplayMusicClip.open(decodedAudioStream);
+                gameplayMusicClip.loop(Clip.LOOP_CONTINUOUSLY); // Musik akan berulang
+                gameplayMusicClip.start(); // Mulai musik gameplay
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                e.printStackTrace();
+            }
+        });
+        musicThread.start();
+    }
+
+    // Method untuk menghentikan musik gameplay jika diperlukan
+    public void stopGameplayMusic() {
+        if (gameplayMusicClip != null && gameplayMusicClip.isRunning()) {
+            gameplayMusicClip.stop();
+            gameplayMusicClip.close();
+        }
+    }
+
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -81,10 +120,12 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
             startAnimation = true;
             Thread animationThread = new Thread(this);
             animationThread.start(); // Mulai animasi latar belakang
+
+            // Memulai balapan di thread yang berbeda
             Thread raceThread = new Thread(() -> {
-                race.race(); // Mulai balapan dan cari pemenangnya
+                race.race(); // Mulai balapan
                 raceFinished = true; // Tandai balapan selesai
-                List<Horse> topFinishers = race.getTopFinishers(); // Ambil pemenang balapan
+                List<Horse> topFinishers = race.getTopFinishers(); // Ambil pemenang
 
                 SwingUtilities.invokeLater(() -> {
                     ResultPanel resultPanel = new ResultPanel(topFinishers, "assets/img/background.png");
@@ -92,7 +133,6 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
                     CardLayout cl = (CardLayout) mainPanel.getLayout();
                     cl.show(mainPanel, "Result");
                 });
-                // repaint(); // Repaint panel setelah balapan selesai
             });
             raceThread.start();
         }
