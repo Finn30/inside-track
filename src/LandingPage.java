@@ -27,9 +27,11 @@ public class LandingPage extends JPanel {
         backgroundLabel.add(Box.createVerticalStrut(20));
 
         // Welcome label at the top
-        JLabel welcomeLabel = new JLabel("Welcome to Inside Track!", JLabel.CENTER);
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 28));
-        welcomeLabel.setForeground(Color.BLACK); // White text for contrast
+        JLabel welcomeLabel = new JLabel("  Welcome to Inside Track!  ", JLabel.CENTER);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 56));
+        welcomeLabel.setForeground(Color.BLACK); // Black text for contrast
+        welcomeLabel.setOpaque(true); // Make the label opaque to show background color
+        welcomeLabel.setBackground(new Color(255, 255, 255, 150)); // White background with some transparency
         welcomeLabel.setAlignmentX(CENTER_ALIGNMENT);
         backgroundLabel.add(welcomeLabel);
 
@@ -107,9 +109,11 @@ public class LandingPage extends JPanel {
         JPanel betPanel = new JPanel();
         betPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); // Align components centrally
         betPanel.setOpaque(false); // Transparent background
+
         JLabel betLabel = new JLabel("Bet Points: ", JLabel.RIGHT);
         betLabel.setForeground(Color.WHITE);
         betPanel.add(betLabel);
+
         JTextField betInput = new JTextField(10);
         betPanel.add(betInput);
 

@@ -66,16 +66,11 @@ public class ResultPanel extends JPanel {
 
         // Panel untuk hasil taruhan (betResultPanel) dan tombol "BET AGAIN"
         JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS)); // Gunakan BoxLayout untuk menambahkan
-                                                                             // elemen secara vertikal
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS)); // Tata letak vertikal
         bottomPanel.setOpaque(false);
-        bottomPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Align the panel in the center
+        bottomPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Semua elemen akan rata tengah
 
-        // Panel untuk hasil taruhan
-        JPanel betResultPanel = new JPanel();
-        betResultPanel.setLayout(new BoxLayout(betResultPanel, BoxLayout.Y_AXIS)); // Menambahkan label secara vertikal
-        betResultPanel.setOpaque(false);
-
+        // 1. Tulisan hasil taruhan (betResultLabel)
         JLabel betResultLabel = new JLabel(
                 isWin
                         ? "Congratulations! You win " + (playerBetPoints * 2) + " points!"
@@ -83,23 +78,21 @@ public class ResultPanel extends JPanel {
                 JLabel.CENTER);
         betResultLabel.setFont(new Font("Arial", Font.BOLD, 20));
         betResultLabel.setForeground(isWin ? Color.GREEN : Color.RED);
+        betResultLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Rata tengah
 
+        // 2. Tulisan "Your current points"
         JLabel pointsLabel = new JLabel("Your current points: " + player.getPoints(), JLabel.CENTER);
         pointsLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         pointsLabel.setForeground(Color.WHITE);
+        pointsLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Rata tengah
 
-        betResultPanel.add(betResultLabel);
-        betResultPanel.add(Box.createVerticalStrut(10)); // Menambahkan jarak antara label
-        betResultPanel.add(pointsLabel);
-
-        bottomPanel.add(betResultPanel); // Menambahkan betResultPanel ke bottomPanel
-
-        // Tombol kembali (BET AGAIN)
+        // 3. Tombol "BET AGAIN"
         JButton backButton = new JButton("BET AGAIN");
         backButton.setFont(new Font("Arial", Font.BOLD, 16));
         backButton.setForeground(Color.WHITE);
         backButton.setBackground(Color.BLACK);
         backButton.setOpaque(true);
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Rata tengah
 
         backButton.addActionListener(e -> {
             // Reset gameplay and return to LandingPage
@@ -133,10 +126,17 @@ public class ResultPanel extends JPanel {
             }
         });
 
-        bottomPanel.add(Box.createVerticalStrut(10)); // Menambahkan jarak antara betResultPanel dan tombol
-        bottomPanel.add(backButton); // Menambahkan tombol "BET AGAIN" ke bottomPanel
+        // Menambahkan elemen ke bottomPanel secara vertikal
+        bottomPanel.add(Box.createVerticalStrut(10)); // Jarak atas
+        bottomPanel.add(betResultLabel); // Tulisan hasil taruhan
+        bottomPanel.add(Box.createVerticalStrut(10)); // Jarak antar komponen
+        bottomPanel.add(pointsLabel); // Tulisan "Your current points"
+        bottomPanel.add(Box.createVerticalStrut(20)); // Jarak antara tulisan dan tombol
+        bottomPanel.add(backButton); // Tombol BET AGAIN
+        bottomPanel.add(Box.createVerticalStrut(10)); // Jarak bawah
 
         add(bottomPanel, BorderLayout.SOUTH); // Menempatkan bottomPanel di bagian bawah
+
     }
 
     /**
