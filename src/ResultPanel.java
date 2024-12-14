@@ -80,7 +80,7 @@ public class ResultPanel extends JPanel {
 
         // Gambar kuda
         ImageIcon horseIcon = new ImageIcon(horse.getImageFolder() + "1.png");
-        Image scaledImage = horseIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        Image scaledImage = horseIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         horseIcon = new ImageIcon(scaledImage);
 
         JLabel horseImageLabel = new JLabel(horseIcon);
