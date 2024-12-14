@@ -60,7 +60,7 @@ public class LandingPage extends JPanel {
             Image horseImage = horseImageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
             horseImageIcon = new ImageIcon(horseImage);
 
-            // Create a panel to hold the horse image
+            // Create a panel to hold the horse image and name
             JPanel horsePanel = new JPanel();
             horsePanel.setLayout(new BorderLayout());
             horsePanel.setOpaque(false); // Transparent background
@@ -73,6 +73,12 @@ public class LandingPage extends JPanel {
             JLabel horseImageLabel = new JLabel(horseImageIcon);
             horseImageLabel.setHorizontalAlignment(JLabel.CENTER);
             horsePanel.add(horseImageLabel, BorderLayout.CENTER);
+
+            // Add the horse name below the image
+            JLabel horseNameLabel = new JLabel(horseNames[i], JLabel.CENTER);
+            horseNameLabel.setForeground(Color.WHITE);
+            horseNameLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            horsePanel.add(horseNameLabel, BorderLayout.SOUTH);
 
             horseSelectionPanel.add(horsePanel);
 
