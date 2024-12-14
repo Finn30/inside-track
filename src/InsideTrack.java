@@ -9,7 +9,11 @@ public class InsideTrack extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
 
-        Player player = new Player("Player 1", 1000); // Membuat objek Player
+        // Masukkan nama pemain dan poin awal
+        String playerName = JOptionPane.showInputDialog("Enter your name:");
+        int initialPoints = 1000; // Default poin awal
+
+        Player player = new Player(playerName, initialPoints); // Buat atau ambil pemain dari database
 
         // Membuat objek Race
         Race race = new Race();
