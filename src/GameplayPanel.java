@@ -128,7 +128,7 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
                 List<Horse> topFinishers = race.getTopFinishers(); // Ambil pemenang
 
                 SwingUtilities.invokeLater(() -> {
-                    ResultPanel resultPanel = new ResultPanel(topFinishers, "assets/img/background2.jpg");
+                    ResultPanel resultPanel = new ResultPanel(topFinishers, "assets/img/background.png");
                     mainPanel.add(resultPanel, "Result");
                     CardLayout cl = (CardLayout) mainPanel.getLayout();
                     cl.show(mainPanel, "Result");

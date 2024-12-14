@@ -3,11 +3,9 @@ import java.awt.*;
 import java.util.List;
 
 public class ResultPanel extends JPanel {
-
     private Image backgroundImage;
 
     public ResultPanel(List<Horse> topFinishers, String backgroundImagePath) {
-
         // Set background image
         try {
             backgroundImage = new ImageIcon(backgroundImagePath).getImage();
@@ -15,35 +13,55 @@ public class ResultPanel extends JPanel {
             e.printStackTrace();
         }
 
+        // Atur tata letak
         setLayout(new BorderLayout());
 
-        // Judul di bagian atas
-        JLabel titleLabel = new JLabel("Hasil Balapan", JLabel.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        // Judul panel
+        JLabel titleLabel = new JLabel("Results", JLabel.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        titleLabel.setForeground(Color.WHITE); // Ubah warna teks agar kontras dengan background
         add(titleLabel, BorderLayout.NORTH);
 
-        // Grid dengan 3 kolom: Juara 2 - Juara 1 - Juara 3
-        JPanel resultGrid = new JPanel(new GridLayout(1, 3, 10, 10));
+        // Panel hasil balapan
+        JPanel resultGrid = new JPanel(new GridBagLayout());
+        resultGrid.setOpaque(false); // Transparan agar background terlihat
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(20, 20, 20, 20); // Margin antar elemen
+        gbc.gridy = 0;
 
-        // Tambahkan panel untuk juara 2
+        // Tambahkan kuda Juara 2 (Kiri)
         if (topFinishers.size() > 1) {
-            resultGrid.add(createHorsePanel(topFinishers.get(1), "Juara 2"));
+            gbc.gridx = 0; // Posisi kiri
+            gbc.anchor = GridBagConstraints.CENTER;
+            resultGrid.add(createHorsePanel(topFinishers.get(1), "2ND"), gbc);
         }
 
-        // Tambahkan panel untuk juara 1
+        // Tambahkan kuda Juara 1 (Tengah)
         if (topFinishers.size() > 0) {
-            resultGrid.add(createHorsePanel(topFinishers.get(0), "Juara 1"));
+            gbc.gridx = 1; // Posisi tengah
+            gbc.anchor = GridBagConstraints.CENTER;
+            resultGrid.add(createHorsePanel(topFinishers.get(0), "1ST"), gbc);
         }
 
-        // Tambahkan panel untuk juara 3
+        // Tambahkan kuda Juara 3 (Kanan)
         if (topFinishers.size() > 2) {
-            resultGrid.add(createHorsePanel(topFinishers.get(2), "Juara 3"));
+            gbc.gridx = 2; // Posisi kanan
+            gbc.anchor = GridBagConstraints.CENTER;
+            resultGrid.add(createHorsePanel(topFinishers.get(2), "3RD"), gbc);
         }
 
         add(resultGrid, BorderLayout.CENTER);
 
-        // Tombol kembali ke menu
-        JButton backButton = new JButton("Kembali ke Menu");
+        // Tombol kembali
+        JButton backButton = new JButton("BET AGAIN");
+        backButton.setFont(new Font("Arial", Font.BOLD, 16)); // Smaller font size for a compact button
+        backButton.setForeground(Color.WHITE); // Set text color to white for contrast
+        backButton.setBackground(Color.BLACK); // Set button background to black
+        backButton.setBorderPainted(false); // Remove the default border
+        backButton.setFocusPainted(false); // Remove focus border
+        backButton.setOpaque(true); // Make the background color fully opaque
+        backButton.setPreferredSize(new Dimension(150, 40)); // Set a preferred size for the button to be smaller
+
         backButton.addActionListener(e -> {
             // Reset gameplay
             Container parent = getParent();
@@ -67,26 +85,36 @@ public class ResultPanel extends JPanel {
         add(backButton, BorderLayout.SOUTH);
     }
 
-    // Fungsi untuk membuat panel individu untuk setiap kuda
+    /**
+     * Membuat panel individu untuk setiap kuda.
+     */
     private JPanel createHorsePanel(Horse horse, String positionLabel) {
         JPanel horsePanel = new JPanel();
         horsePanel.setLayout(new BorderLayout());
+        horsePanel.setOpaque(false); // Transparan agar background terlihat
 
         // Gambar kuda
         ImageIcon horseIcon = new ImageIcon(horse.getImageFolder() + "1.png");
+        Image scaledImage = horseIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        horseIcon = new ImageIcon(scaledImage);
+
         JLabel horseImageLabel = new JLabel(horseIcon);
         horseImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         horsePanel.add(horseImageLabel, BorderLayout.CENTER);
 
-        // Nama kuda dan posisinya
+        // Nama kuda dan posisi
         JLabel horseNameLabel = new JLabel(horse.getName(), JLabel.CENTER);
         horseNameLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        JLabel position = new JLabel(positionLabel, JLabel.CENTER);
-        position.setFont(new Font("Arial", Font.PLAIN, 16));
+        horseNameLabel.setForeground(Color.WHITE); // Ubah warna teks agar kontras dengan background
+
+        JLabel positionLabelComponent = new JLabel(positionLabel, JLabel.CENTER);
+        positionLabelComponent.setFont(new Font("Arial", Font.PLAIN, 16));
+        positionLabelComponent.setForeground(Color.YELLOW); // Kontras dengan warna teks lainnya
 
         JPanel textPanel = new JPanel(new GridLayout(2, 1));
+        textPanel.setOpaque(false); // Transparan
         textPanel.add(horseNameLabel);
-        textPanel.add(position);
+        textPanel.add(positionLabelComponent);
 
         horsePanel.add(textPanel, BorderLayout.SOUTH);
 
