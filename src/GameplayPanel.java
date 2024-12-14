@@ -60,7 +60,8 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
                 int horseY = 80 + horses.indexOf(horse) * 80; // Atur Y berdasarkan nomor kuda
 
                 // Load gambar kuda berdasarkan frame index
-                ImageIcon horseIcon = new ImageIcon("./assets/horse-running/horse/" + (frameIndex + 1) + ".png");
+                String imagePath = horse.getImageFolder() + (frameIndex + 1) + ".png";
+                ImageIcon horseIcon = new ImageIcon(imagePath);
                 Image horseImage = horseIcon.getImage();
 
                 // Gambar kuda sebagai gambar

@@ -5,11 +5,18 @@ public class Horse {
 
 	private String name;
 
+	private String imageFolder;
+
 	/**
 	 * Constructor.
 	 */
-	public Horse(String name) {
+	public Horse(String name, String imageFolder) {
 		this.name = name;
+		this.imageFolder = imageFolder;
+	}
+
+	public String getImageFolder() {
+		return imageFolder;
 	}
 
 	/**

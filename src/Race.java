@@ -10,9 +10,14 @@ public class Race {
 	private RaceListener listener;
 
 	public Race() {
-		for (int i = 0; i < NUMBER_OF_RUNNERS; i++) {
-			runners.add(new Horse("Horse " + (i + 1)));
-		}
+		// for (int i = 0; i < NUMBER_OF_RUNNERS; i++) {
+		// runners.add(new Horse("Horse " + (i + 1)));
+		// }
+		runners.add(new Horse("Horse Green", "assets/horse-running/horse-green/"));
+		runners.add(new Horse("Horse Pink", "assets/horse-running/horse-pink/"));
+		runners.add(new Horse("Horse Purple", "assets/horse-running/horse-purple/"));
+		runners.add(new Horse("Horse Red", "assets/horse-running/horse-red/"));
+		runners.add(new Horse("Horse Brown", "assets/horse-running/horse-brown/"));
 	}
 
 	public void setListener(RaceListener listener) {
