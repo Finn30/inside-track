@@ -149,6 +149,17 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
         JOptionPane.showMessageDialog(this, "Kuda yang menang: " + status, "Pemenang Balapan",
                 JOptionPane.INFORMATION_MESSAGE);
     }
+    // Logika untuk memeriksa apakah kuda yang dipilih menang
+    public void checkBetResult(Horse winningHorse) {
+        if (selectedHorse != null && selectedHorse.equals(winningHorse)) {
+            // Jika kuda yang dipilih menang
+            balance += betAmount * 2;  // Contoh: pengganda 2x untuk kemenangan
+            JOptionPane.showMessageDialog(this, "Selamat! Kuda Anda menang! Saldo Anda: Rp " + balance);
+        } else {
+            // Jika kuda yang dipilih kalah
+            JOptionPane.showMessageDialog(this, "Sayang sekali, Anda kalah! Saldo Anda: Rp " + balance);
+        }
+    }
 
     public void resetGame() {
         raceFinished = false;
@@ -163,6 +174,9 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
     // Method to set the bet amount from the LandingPage
     public void setBetAmount(double betAmount) {
         this.betAmount = betAmount;
+    }
+    public void setSelectedHorse(Horse selectedHorse) {
+        this.selectedHorse = selectedHorse;
     }
 
     // Method to get the current balance

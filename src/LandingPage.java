@@ -62,22 +62,10 @@ public class LandingPage extends JPanel {
         // ActionListener for the start button
         startButton.addActionListener(e -> {
             // Check if bet has been placed and if the selected horse is valid
-            if (selectedHorse == null || betField.getText().isEmpty()|| isBetTerpasang == false) {
+            if (selectedHorse == null || betField.getText().isEmpty()|| isBetTerpasang == false && balance == 0) {
                 JOptionPane.showMessageDialog(this, "Silakan pasang taruhan terlebih dahulu sebelum memulai balapan.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;  // Prevent the game from starting if the bet is not placed
             }
-            
-            try {
-                double betAmount = Double.parseDouble(betField.getText());
-                if (betAmount <= 0 || betAmount > balance) {
-                    JOptionPane.showMessageDialog(this, "Jumlah taruhan tidak valid atau saldo tidak cukup.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Masukkan jumlah taruhan yang valid.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            
             // Reset the game
             gameplayPanel.resetGame();
             
@@ -86,28 +74,42 @@ public class LandingPage extends JPanel {
             cl.show(mainPanel, "Gameplay");
             
             gameplayPanel.startAnimation(mainPanel);
+
             isBetTerpasang = false;
             betField.setText("");
         });
 
-        // ActionListener for the place bet button
+        // ActionListener untuk tombol pasang taruhan
         placeBetButton.addActionListener(e -> {
             try {
-                isBetTerpasang = true;
                 double betAmount = Double.parseDouble(betField.getText());
-                if (betAmount <= balance && betAmount > 0 && selectedHorse != null) {
-                    // Update the balance after placing the bet
-                    balance -= betAmount;
-                    balanceLabel.setText("Saldo Anda: Rp " + balance);
 
-                    // Pass the bet amount and selected horse to the gameplay panel
-                    gameplayPanel.setBetAmount(betAmount);
-
-                    // Optionally, you can display a confirmation message
-                    JOptionPane.showMessageDialog(this, "Taruhan Anda sebesar Rp " + betAmount + " pada kuda: " + selectedHorse.getName());
-                } else {
-                    JOptionPane.showMessageDialog(this, "Jumlah taruhan tidak valid, saldo tidak cukup, atau belum memilih kuda.", "Error", JOptionPane.ERROR_MESSAGE);
+                // Validasi jumlah taruhan
+                if (betAmount <= 0 || betAmount > balance) {
+                    JOptionPane.showMessageDialog(this, "Jumlah taruhan tidak valid atau saldo tidak cukup.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
+
+                // Validasi apakah kuda telah dipilih
+                if (selectedHorse == null) {
+                    JOptionPane.showMessageDialog(this, "Silakan pilih kuda terlebih dahulu.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Set taruhan jika valid
+                isBetTerpasang = true;
+
+                // Update saldo setelah taruhan
+                balance -= betAmount;
+                balanceLabel.setText("Saldo Anda: Rp " + balance);
+
+                // Kirim jumlah taruhan dan kuda yang dipilih ke panel gameplay
+                gameplayPanel.setBetAmount(betAmount);
+                gameplayPanel.setSelectedHorse(selectedHorse);
+
+                // Tampilkan pesan konfirmasi
+                JOptionPane.showMessageDialog(this, "Taruhan Anda sebesar Rp " + betAmount + " pada kuda: " + selectedHorse.getName());
+                
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Masukkan jumlah taruhan yang valid.", "Error", JOptionPane.ERROR_MESSAGE);
             }
