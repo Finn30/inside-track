@@ -35,27 +35,7 @@ public class ResultPanel extends JPanel {
         titleLabel.setForeground(Color.WHITE);
         add(titleLabel, BorderLayout.NORTH);
 
-        // Panel untuk hasil taruhan
-        JPanel betResultPanel = new JPanel(new GridLayout(2, 1));
-        betResultPanel.setOpaque(false);
-
-        JLabel betResultLabel = new JLabel(
-                isWin
-                        ? "Congratulations! You win " + (playerBetPoints * 2) + " points!"
-                        : "You lose! Points deducted: " + playerBetPoints,
-                JLabel.CENTER);
-        betResultLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        betResultLabel.setForeground(isWin ? Color.GREEN : Color.RED);
-
-        JLabel pointsLabel = new JLabel("Your current points: " + player.getPoints(), JLabel.CENTER);
-        pointsLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-        pointsLabel.setForeground(Color.WHITE);
-
-        betResultPanel.add(betResultLabel);
-        betResultPanel.add(pointsLabel);
-        add(betResultPanel, BorderLayout.NORTH); // Tempatkan di atas panel juara
-
-        // Panel hasil balapan
+        // Panel hasil balapan (juara)
         JPanel resultGrid = new JPanel(new GridBagLayout());
         resultGrid.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -82,7 +62,37 @@ public class ResultPanel extends JPanel {
 
         add(resultGrid, BorderLayout.CENTER); // Tempatkan di tengah panel
 
-        // Tombol kembali
+        // Panel untuk hasil taruhan (betResultPanel) dan tombol "BET AGAIN"
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS)); // Gunakan BoxLayout untuk menambahkan
+                                                                             // elemen secara vertikal
+        bottomPanel.setOpaque(false);
+        bottomPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Align the panel in the center
+
+        // Panel untuk hasil taruhan
+        JPanel betResultPanel = new JPanel();
+        betResultPanel.setLayout(new BoxLayout(betResultPanel, BoxLayout.Y_AXIS)); // Menambahkan label secara vertikal
+        betResultPanel.setOpaque(false);
+
+        JLabel betResultLabel = new JLabel(
+                isWin
+                        ? "Congratulations! You win " + (playerBetPoints * 2) + " points!"
+                        : "You lose! Points deducted: " + playerBetPoints,
+                JLabel.CENTER);
+        betResultLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        betResultLabel.setForeground(isWin ? Color.GREEN : Color.RED);
+
+        JLabel pointsLabel = new JLabel("Your current points: " + player.getPoints(), JLabel.CENTER);
+        pointsLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        pointsLabel.setForeground(Color.WHITE);
+
+        betResultPanel.add(betResultLabel);
+        betResultPanel.add(Box.createVerticalStrut(10)); // Menambahkan jarak antara label
+        betResultPanel.add(pointsLabel);
+
+        bottomPanel.add(betResultPanel); // Menambahkan betResultPanel ke bottomPanel
+
+        // Tombol kembali (BET AGAIN)
         JButton backButton = new JButton("BET AGAIN");
         backButton.setFont(new Font("Arial", Font.BOLD, 16));
         backButton.setForeground(Color.WHITE);
@@ -93,11 +103,19 @@ public class ResultPanel extends JPanel {
             // Reset gameplay dan kembali ke LandingPage
             gameplayPanel.resetGame();
 
+            // Ganti musik ke lagu landing page
+            gameplayPanel.stopGameplayMusic();
+            // gameplayPanel.playBackgroundMusic("assets/music/music-landingpage.wav"); //
+            // Putar ulang musik landing page
+
             Container parent = getParent();
             CardLayout cl = (CardLayout) parent.getLayout();
             cl.show(parent, "Landing");
         });
-        add(backButton, BorderLayout.SOUTH);
+        bottomPanel.add(Box.createVerticalStrut(10)); // Menambahkan jarak antara betResultPanel dan tombol
+        bottomPanel.add(backButton); // Menambahkan tombol "BET AGAIN" ke bottomPanel
+
+        add(bottomPanel, BorderLayout.SOUTH); // Menempatkan bottomPanel di bagian bawah
     }
 
     /**
