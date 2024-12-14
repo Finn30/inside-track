@@ -26,7 +26,7 @@ public class LandingPage extends JPanel {
         JComboBox<String> horseSelection = new JComboBox<>(
                 new String[] { "Horse Green", "Horse Pink", "Horse Purple", "Horse Red", "Horse Brown" });
         JTextField betInput = new JTextField(10);
-        pointsLabel = new JLabel("Points: " + player.getPoints()); // Initialize the pointsLabel here
+        pointsLabel = new JLabel("Points: " + player.getPoints());
 
         JPanel selectionPanel = new JPanel();
         selectionPanel.add(new JLabel("Select Horse: "));
