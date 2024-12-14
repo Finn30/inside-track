@@ -1,8 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class HorseRacingGame extends JFrame {
-    public HorseRacingGame() {
+public class InsideTrack extends JFrame {
+    public InsideTrack() {
         setTitle("Inside Track");
         setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,6 +32,6 @@ public class HorseRacingGame extends JFrame {
 
     public static void main(String[] args) {
         // Memulai aplikasi
-        new HorseRacingGame();
+        new InsideTrack();
     }
 }

@@ -130,6 +130,10 @@ public class LandingPage extends JPanel {
         // Start game button
         JButton startButton = new JButton("Start Game");
         startButton.setAlignmentX(CENTER_ALIGNMENT); // Center the start button
+        startButton.setPreferredSize(new Dimension(200, 50)); // Increase button size
+        // Set the background color of the start button to black
+        startButton.setBackground(Color.YELLOW);
+        startButton.setForeground(Color.BLACK); // Set the text color to white for contrast
         backgroundLabel.add(startButton);
 
         startButton.addActionListener(e -> {
