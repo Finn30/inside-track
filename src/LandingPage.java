@@ -13,17 +13,47 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class LandingPage extends JPanel {
 
     private Clip backgroundMusicClip;
+    private Player player;
 
-    public LandingPage(JPanel mainPanel, GameplayPanel gameplayPanel) {
+    public LandingPage(JPanel mainPanel, GameplayPanel gameplayPanel, Player player) {
+        this.player = player;
         setLayout(new BorderLayout());
 
         JLabel welcomeLabel = new JLabel("Welcome to Inside Track!", JLabel.CENTER);
         add(welcomeLabel, BorderLayout.CENTER);
 
+        JComboBox<String> horseSelection = new JComboBox<>(
+                new String[] { "Horse Green", "Horse Pink", "Horse Purple", "Horse Red", "Horse Brown" });
+        JTextField betInput = new JTextField(10);
+        JLabel pointsLabel = new JLabel("Points: " + player.getPoints());
+
+        JPanel selectionPanel = new JPanel();
+        selectionPanel.add(new JLabel("Select Horse: "));
+        selectionPanel.add(horseSelection);
+        selectionPanel.add(new JLabel("Bet Points: "));
+        selectionPanel.add(betInput);
+        selectionPanel.add(pointsLabel);
+        add(selectionPanel, BorderLayout.NORTH);
+
         JButton startButton = new JButton("Start Game");
         add(startButton, BorderLayout.SOUTH);
 
         startButton.addActionListener(e -> {
+            String selectedHorse = (String) horseSelection.getSelectedItem();
+            int betPoints = Integer.parseInt(betInput.getText());
+
+            try {
+                betPoints = Integer.parseInt(betInput.getText());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid bet amount!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (betPoints > player.getPoints()) {
+                JOptionPane.showMessageDialog(this, "Not enough points!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             // Hentikan musik LandingPage sebelum memulai game
             stopBackgroundMusic();
 
@@ -33,6 +63,8 @@ public class LandingPage extends JPanel {
             // Ganti panel ke Gameplay
             CardLayout cl = (CardLayout) mainPanel.getLayout();
             cl.show(mainPanel, "Gameplay");
+
+            gameplayPanel.setPlayerBet(selectedHorse, betPoints);
 
             // Mulai animasi background dan musik Gameplay setelah GameplayPanel ditampilkan
             gameplayPanel.startAnimation(mainPanel);

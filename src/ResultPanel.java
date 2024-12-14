@@ -5,7 +5,7 @@ import java.util.List;
 public class ResultPanel extends JPanel {
     private Image backgroundImage;
 
-    public ResultPanel(List<Horse> topFinishers, String backgroundImagePath) {
+    public ResultPanel(List<Horse> topFinishers, String backgroundImagePath, GameplayPanel gameplayPanel) {
         // Set background image
         try {
             backgroundImage = new ImageIcon(backgroundImagePath).getImage();
@@ -13,72 +13,87 @@ public class ResultPanel extends JPanel {
             e.printStackTrace();
         }
 
+        // Ambil data pemain dan taruhan
+        Player player = gameplayPanel.getPlayer();
+        String playerBetHorse = gameplayPanel.getPlayerBetHorse();
+        int playerBetPoints = gameplayPanel.getPlayerBetPoints();
+
+        // Logika menang/kalah
+        Horse winner = topFinishers.get(0); // Juara 1
+        boolean isWin = winner.getName().equals(playerBetHorse);
+        int pointsChange = isWin ? playerBetPoints * 2 : -playerBetPoints;
+
+        // Perbarui poin pemain
+        player.addPoints(pointsChange);
+
         // Atur tata letak
         setLayout(new BorderLayout());
 
         // Judul panel
-        JLabel titleLabel = new JLabel("Results", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("Race Results", JLabel.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
-        titleLabel.setForeground(Color.WHITE); // Ubah warna teks agar kontras dengan background
+        titleLabel.setForeground(Color.WHITE);
         add(titleLabel, BorderLayout.NORTH);
+
+        // Panel untuk hasil taruhan
+        JPanel betResultPanel = new JPanel(new GridLayout(2, 1));
+        betResultPanel.setOpaque(false);
+
+        JLabel betResultLabel = new JLabel(
+                isWin
+                        ? "Congratulations! You win " + (playerBetPoints * 2) + " points!"
+                        : "You lose! Points deducted: " + playerBetPoints,
+                JLabel.CENTER);
+        betResultLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        betResultLabel.setForeground(isWin ? Color.GREEN : Color.RED);
+
+        JLabel pointsLabel = new JLabel("Your current points: " + player.getPoints(), JLabel.CENTER);
+        pointsLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        pointsLabel.setForeground(Color.WHITE);
+
+        betResultPanel.add(betResultLabel);
+        betResultPanel.add(pointsLabel);
+        add(betResultPanel, BorderLayout.NORTH); // Tempatkan di atas panel juara
 
         // Panel hasil balapan
         JPanel resultGrid = new JPanel(new GridBagLayout());
-        resultGrid.setOpaque(false); // Transparan agar background terlihat
+        resultGrid.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(20, 20, 20, 20); // Margin antar elemen
+        gbc.insets = new Insets(20, 20, 20, 20);
         gbc.gridy = 0;
 
         // Tambahkan kuda Juara 2 (Kiri)
         if (topFinishers.size() > 1) {
-            gbc.gridx = 0; // Posisi kiri
-            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.gridx = 0;
             resultGrid.add(createHorsePanel(topFinishers.get(1), "2ND"), gbc);
         }
 
         // Tambahkan kuda Juara 1 (Tengah)
         if (topFinishers.size() > 0) {
-            gbc.gridx = 1; // Posisi tengah
-            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.gridx = 1;
             resultGrid.add(createHorsePanel(topFinishers.get(0), "1ST"), gbc);
         }
 
         // Tambahkan kuda Juara 3 (Kanan)
         if (topFinishers.size() > 2) {
-            gbc.gridx = 2; // Posisi kanan
-            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.gridx = 2;
             resultGrid.add(createHorsePanel(topFinishers.get(2), "3RD"), gbc);
         }
 
-        add(resultGrid, BorderLayout.CENTER);
+        add(resultGrid, BorderLayout.CENTER); // Tempatkan di tengah panel
 
         // Tombol kembali
         JButton backButton = new JButton("BET AGAIN");
-        backButton.setFont(new Font("Arial", Font.BOLD, 16)); // Smaller font size for a compact button
-        backButton.setForeground(Color.WHITE); // Set text color to white for contrast
-        backButton.setBackground(Color.BLACK); // Set button background to black
-        backButton.setBorderPainted(false); // Remove the default border
-        backButton.setFocusPainted(false); // Remove focus border
-        backButton.setOpaque(true); // Make the background color fully opaque
-        backButton.setPreferredSize(new Dimension(150, 40)); // Set a preferred size for the button to be smaller
+        backButton.setFont(new Font("Arial", Font.BOLD, 16));
+        backButton.setForeground(Color.WHITE);
+        backButton.setBackground(Color.BLACK);
+        backButton.setOpaque(true);
 
         backButton.addActionListener(e -> {
-            // Reset gameplay
+            // Reset gameplay dan kembali ke LandingPage
+            gameplayPanel.resetGame();
+
             Container parent = getParent();
-            for (Component comp : parent.getComponents()) {
-                if (comp instanceof GameplayPanel) {
-                    ((GameplayPanel) comp).resetGame();
-                    ((GameplayPanel) comp).stopGameplayMusic();
-                }
-            }
-
-            for (Component comp : parent.getComponents()) {
-                if (comp instanceof LandingPage) {
-                    ((LandingPage) comp).playBackgroundMusic("assets/music/music-landingpage.wav"); // Putar ulang musik
-                }
-            }
-
-            // Tampilkan halaman utama
             CardLayout cl = (CardLayout) parent.getLayout();
             cl.show(parent, "Landing");
         });
@@ -89,11 +104,9 @@ public class ResultPanel extends JPanel {
      * Membuat panel individu untuk setiap kuda.
      */
     private JPanel createHorsePanel(Horse horse, String positionLabel) {
-        JPanel horsePanel = new JPanel();
-        horsePanel.setLayout(new BorderLayout());
-        horsePanel.setOpaque(false); // Transparan agar background terlihat
+        JPanel horsePanel = new JPanel(new BorderLayout());
+        horsePanel.setOpaque(false);
 
-        // Gambar kuda
         ImageIcon horseIcon = new ImageIcon(horse.getImageFolder() + "1.png");
         Image scaledImage = horseIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         horseIcon = new ImageIcon(scaledImage);
@@ -102,17 +115,16 @@ public class ResultPanel extends JPanel {
         horseImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         horsePanel.add(horseImageLabel, BorderLayout.CENTER);
 
-        // Nama kuda dan posisi
         JLabel horseNameLabel = new JLabel(horse.getName(), JLabel.CENTER);
         horseNameLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        horseNameLabel.setForeground(Color.WHITE); // Ubah warna teks agar kontras dengan background
+        horseNameLabel.setForeground(Color.WHITE);
 
         JLabel positionLabelComponent = new JLabel(positionLabel, JLabel.CENTER);
         positionLabelComponent.setFont(new Font("Arial", Font.PLAIN, 16));
-        positionLabelComponent.setForeground(Color.YELLOW); // Kontras dengan warna teks lainnya
+        positionLabelComponent.setForeground(Color.YELLOW);
 
         JPanel textPanel = new JPanel(new GridLayout(2, 1));
-        textPanel.setOpaque(false); // Transparan
+        textPanel.setOpaque(false);
         textPanel.add(horseNameLabel);
         textPanel.add(positionLabelComponent);
 

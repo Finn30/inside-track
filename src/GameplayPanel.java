@@ -19,7 +19,12 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
 
     private Clip gameplayMusicClip; // Clip untuk memutar musik gameplay
 
-    public GameplayPanel(JPanel mainPanel, Race race) {
+    private Player player;
+    private String playerBetHorse;
+    private int playerBetPoints;
+
+    public GameplayPanel(JPanel mainPanel, Race race, Player player) {
+        this.player = player;
         this.mainPanel = mainPanel;
         this.race = race;
         this.horses = race.getRunners(); // Ambil daftar kuda
@@ -35,6 +40,23 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
         statusLabel.setForeground(Color.RED);
         statusLabel.setPreferredSize(new Dimension(800, 50));
         add(statusLabel, BorderLayout.NORTH);
+    }
+
+    public void setPlayerBet(String horse, int points) {
+        this.playerBetHorse = horse;
+        this.playerBetPoints = points;
+    }
+
+    public String getPlayerBetHorse() {
+        return playerBetHorse;
+    }
+
+    public int getPlayerBetPoints() {
+        return playerBetPoints;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     // Method untuk memutar musik gameplay
@@ -128,7 +150,7 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
                 List<Horse> topFinishers = race.getTopFinishers(); // Ambil pemenang
 
                 SwingUtilities.invokeLater(() -> {
-                    ResultPanel resultPanel = new ResultPanel(topFinishers, "assets/img/background.png");
+                    ResultPanel resultPanel = new ResultPanel(topFinishers, "assets/img/background.png", this);
                     mainPanel.add(resultPanel, "Result");
                     CardLayout cl = (CardLayout) mainPanel.getLayout();
                     cl.show(mainPanel, "Result");
@@ -167,11 +189,17 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
     public void notifyRaceProgress() {
     }
 
+    @Override
     public void notifyStatus(String status) {
-        statusLabel.setText(status);
-
-        JOptionPane.showMessageDialog(this, "Kuda yang menang: " + status, "Pemenang Balapan",
-                JOptionPane.INFORMATION_MESSAGE);
+        if (status.equals(playerBetHorse)) {
+            player.addPoints(playerBetPoints * 2); // Menang, gandakan poin
+            JOptionPane.showMessageDialog(this, "Congratulations! You win " + (playerBetPoints * 2) + " points!",
+                    "Winner", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            player.subtractPoints(playerBetPoints); // Kalah, poin berkurang
+            JOptionPane.showMessageDialog(this, "You lose! Points deducted: " + playerBetPoints, "Loser",
+                    JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     public void resetGame() {
