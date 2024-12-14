@@ -23,10 +23,17 @@ public class ResultPanel extends JPanel {
         // Logika menang/kalah
         Horse winner = topFinishers.get(0); // Juara 1
         boolean isWin = winner.getName().equals(playerBetHorse);
-        int pointsChange = isWin ? playerBetPoints * 2 : -playerBetPoints;
+        // Tambahkan atau kurangi poin sesuai hasil balapan
+        if (isWin) {
+            player.addPoints(playerBetPoints * 2); // Menang: poin digandakan
+        }
+        // else {
+        // player.subtractPoints(playerBetPoints); // Kalah: kurangi poin, logika
+        // mencegah minus sudah diatur
+        // }
 
-        // Perbarui poin pemain
-        player.addPoints(pointsChange);
+        // Simpan poin terbaru ke database
+        PlayerDB.updatePlayerPoints(player.getName(), player.getPoints());
 
         // Atur tata letak
         setLayout(new BorderLayout());
