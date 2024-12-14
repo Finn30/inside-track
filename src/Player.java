@@ -5,10 +5,6 @@ public class Player {
     public Player(String name, int initialPoints) {
         this.name = name;
         this.points = PlayerDB.getPlayerPoints(name);
-        if (this.points == 0) { // Jika poin 0, asumsi pemain baru
-            PlayerDB.addPlayer(name, initialPoints); // Tambahkan ke database
-            this.points = initialPoints;
-        }
     }
 
     public String getName() {
@@ -25,7 +21,12 @@ public class Player {
     }
 
     public void subtractPoints(int points) {
-        this.points -= points;
-        PlayerDB.updatePlayerPoints(name, this.points);
+        if (this.points - points < 0) {
+            this.points = 0; // Jika hasil pengurangan kurang dari 0, set poin ke 0
+        } else {
+            this.points -= points;
+        }
+        PlayerDB.updatePlayerPoints(this.name, this.points);
     }
+
 }

@@ -4,43 +4,64 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class PlayerDB {
-    public static void addPlayer(String playerName, int initialPoints) {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "INSERT INTO players (name, points) VALUES (?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, playerName);
-            statement.setInt(2, initialPoints);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public static int getPlayerPoints(String playerName) {
-        int points = 0;
+    public static int getPlayerPoints(String username) {
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT points FROM players WHERE name = ?";
+            String query = "SELECT points FROM users WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, playerName);
+            statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                points = resultSet.getInt("points");
+                return resultSet.getInt("points");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return points;
+        return 0;
     }
 
-    public static void updatePlayerPoints(String playerName, int points) {
+    public static void updatePlayerPoints(String username, int points) {
+        if (points < 0) {
+            points = 0; // Pastikan poin tidak negatif
+        }
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "UPDATE players SET points = ? WHERE name = ?";
+            String query = "UPDATE users SET points = ? WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, points);
-            statement.setString(2, playerName);
+            statement.setString(2, username);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    // Method untuk login
+    public static boolean login(String username, String password) {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next(); // Jika ada hasil, login berhasil
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Method untuk registrasi
+    public static boolean register(String username, String password) {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String query = "INSERT INTO users (username, password) VALUES (?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setString(2, password);
+            statement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

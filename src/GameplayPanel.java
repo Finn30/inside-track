@@ -43,8 +43,15 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
     }
 
     public void setPlayerBet(String horse, int points) {
+        if (points > player.getPoints()) {
+            JOptionPane.showMessageDialog(this, "Not enough points!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         this.playerBetHorse = horse;
         this.playerBetPoints = points;
+        // Kurangi poin dari pemain
+        player.subtractPoints(points);
+        PlayerDB.updatePlayerPoints(player.getName(), player.getPoints());
     }
 
     public String getPlayerBetHorse() {
