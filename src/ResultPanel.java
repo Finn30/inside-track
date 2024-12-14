@@ -17,7 +17,7 @@ public class ResultPanel extends JPanel {
         setLayout(new BorderLayout());
 
         // Judul panel
-        JLabel titleLabel = new JLabel("Hasil Balapan", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("Results", JLabel.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
         titleLabel.setForeground(Color.WHITE); // Ubah warna teks agar kontras dengan background
         add(titleLabel, BorderLayout.NORTH);
@@ -33,27 +33,35 @@ public class ResultPanel extends JPanel {
         if (topFinishers.size() > 1) {
             gbc.gridx = 0; // Posisi kiri
             gbc.anchor = GridBagConstraints.CENTER;
-            resultGrid.add(createHorsePanel(topFinishers.get(1), "Juara 2"), gbc);
+            resultGrid.add(createHorsePanel(topFinishers.get(1), "2ND"), gbc);
         }
 
         // Tambahkan kuda Juara 1 (Tengah)
         if (topFinishers.size() > 0) {
             gbc.gridx = 1; // Posisi tengah
             gbc.anchor = GridBagConstraints.CENTER;
-            resultGrid.add(createHorsePanel(topFinishers.get(0), "Juara 1"), gbc);
+            resultGrid.add(createHorsePanel(topFinishers.get(0), "1ST"), gbc);
         }
 
         // Tambahkan kuda Juara 3 (Kanan)
         if (topFinishers.size() > 2) {
             gbc.gridx = 2; // Posisi kanan
             gbc.anchor = GridBagConstraints.CENTER;
-            resultGrid.add(createHorsePanel(topFinishers.get(2), "Juara 3"), gbc);
+            resultGrid.add(createHorsePanel(topFinishers.get(2), "3RD"), gbc);
         }
 
         add(resultGrid, BorderLayout.CENTER);
 
         // Tombol kembali
-        JButton backButton = new JButton("Kembali ke Menu");
+        JButton backButton = new JButton("BET AGAIN");
+        backButton.setFont(new Font("Arial", Font.BOLD, 16)); // Smaller font size for a compact button
+        backButton.setForeground(Color.WHITE); // Set text color to white for contrast
+        backButton.setBackground(Color.BLACK); // Set button background to black
+        backButton.setBorderPainted(false); // Remove the default border
+        backButton.setFocusPainted(false); // Remove focus border
+        backButton.setOpaque(true); // Make the background color fully opaque
+        backButton.setPreferredSize(new Dimension(150, 40)); // Set a preferred size for the button to be smaller
+
         backButton.addActionListener(e -> {
             // Reset gameplay
             Container parent = getParent();
