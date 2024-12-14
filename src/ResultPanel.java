@@ -109,36 +109,27 @@ public class ResultPanel extends JPanel {
             gameplayPanel.stopGameplayMusic();
 
             // Update points on the LandingPage
-            player.addPoints(pointsChange);
-
-            // Get the parent container (assumes ResultPanel is added to a container with
-            // CardLayout)
             Container parent = getParent();
 
-            // Assuming parent is a CardLayout container with mainPanel holding multiple
-            // panels
             if (parent instanceof JPanel) {
                 JPanel mainPanel = (JPanel) parent;
 
-                // Now you can access mainPanel and its components
-                Component landingPageComponent = mainPanel.getComponent(0); // Assuming LandingPage is at index 0
-
-                // Check if the component is an instance of LandingPage
+                // Retrieve LandingPage instance
+                Component landingPageComponent = mainPanel.getComponent(0); // Assuming LandingPage is the first
+                                                                            // component
                 if (landingPageComponent instanceof LandingPage) {
                     LandingPage landingPage = (LandingPage) landingPageComponent;
 
-                    // Update points on the LandingPage
+                    // Update points display on LandingPage
                     landingPage.updatePointsDisplay();
 
-                    // Start landing page music
+                    // Restart landing page music
                     landingPage.playBackgroundMusic("assets/music/music-landingpage.wav");
-                } else {
-                    System.err.println("Error: The component at index 0 is not a LandingPage.");
                 }
 
                 // Switch to LandingPage using CardLayout
                 CardLayout cl = (CardLayout) parent.getLayout();
-                cl.show(parent, "Landing"); // Ensure the card name is "Landing"
+                cl.show(parent, "Landing");
             }
         });
 
