@@ -17,8 +17,8 @@ public class HorseRacingGame extends JFrame {
         add(mainPanel);
 
         // Membuat panel untuk LandingPage dan Gameplay
-        GameplayPanel gameplayPanel = new GameplayPanel(mainPanel, race);
-        LandingPage landingPage = new LandingPage(mainPanel, gameplayPanel);
+        GameplayPanel gameplayPanel = new GameplayPanel(mainPanel, race);// Pass RacePanel here
+        LandingPage landingPage = new LandingPage(mainPanel, gameplayPanel, race);
 
         // Menambahkan panel-panel ke dalam mainPanel
         mainPanel.add(landingPage, "Landing");

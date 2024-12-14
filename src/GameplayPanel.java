@@ -15,9 +15,13 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
 
     private Race race; // Referensi ke objek Race
     private List<Horse> horses; // List kuda
-    private JLabel statusLabel;
 
     private Clip gameplayMusicClip; // Clip untuk memutar musik gameplay
+    private JLabel statusLabel;
+
+    private double betAmount; // Bet amount placed by the user
+    private double balance = 1000.0; // User's starting balance
+    private Horse selectedHorse; // Horse selected by the user for betting
 
     public GameplayPanel(JPanel mainPanel, Race race) {
         this.mainPanel = mainPanel;
@@ -135,6 +139,7 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
                 });
             });
             raceThread.start();
+
         }
     }
 
@@ -164,14 +169,16 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
         }
     }
 
-    public void notifyRaceProgress() {
-    }
-
-    public void notifyStatus(String status) {
-        statusLabel.setText(status);
-
-        JOptionPane.showMessageDialog(this, "Kuda yang menang: " + status, "Pemenang Balapan",
-                JOptionPane.INFORMATION_MESSAGE);
+    // Logika untuk memeriksa apakah kuda yang dipilih menang
+    public void checkBetResult(Horse winningHorse) {
+        if (selectedHorse != null && selectedHorse.equals(winningHorse)) {
+            // Jika kuda yang dipilih menang
+            balance += betAmount * 2; // Contoh: pengganda 2x untuk kemenangan
+            JOptionPane.showMessageDialog(this, "Selamat! Kuda Anda menang! Saldo Anda: Rp " + balance);
+        } else {
+            // Jika kuda yang dipilih kalah
+            JOptionPane.showMessageDialog(this, "Sayang sekali, Anda kalah! Saldo Anda: Rp " + balance);
+        }
     }
 
     public void resetGame() {
@@ -182,6 +189,30 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
             horse.reset(); // Reset posisi kuda
         }
         repaint(); // Perbarui tampilan
+    }
+
+    // Method to set the bet amount from the LandingPage
+    public void setBetAmount(double betAmount) {
+        this.betAmount = betAmount;
+    }
+
+    public void setSelectedHorse(Horse selectedHorse) {
+        this.selectedHorse = selectedHorse;
+    }
+
+    // Method to get the current balance
+    public double getBalance() {
+        return balance;
+    }
+
+    public void notifyRaceProgress() {
+    }
+
+    public void notifyStatus(String status) {
+        statusLabel.setText(status);
+
+        JOptionPane.showMessageDialog(this, "Kuda yang menang: " + status, "Pemenang Balapan",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
 }
