@@ -41,7 +41,7 @@ public class LandingPage extends JPanel {
 
         startButton.addActionListener(e -> {
             String selectedHorse = (String) horseSelection.getSelectedItem();
-            int betPoints = Integer.parseInt(betInput.getText());
+            int betPoints;
 
             try {
                 betPoints = Integer.parseInt(betInput.getText());
@@ -50,6 +50,14 @@ public class LandingPage extends JPanel {
                 return;
             }
 
+            // Validasi: pastikan nilai taruhan > 0
+            if (betPoints <= 0) {
+                JOptionPane.showMessageDialog(this, "Bet amount must be greater than 0!", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Validasi: pastikan poin pemain mencukupi
             if (betPoints > player.getPoints()) {
                 JOptionPane.showMessageDialog(this, "Not enough points!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -65,6 +73,7 @@ public class LandingPage extends JPanel {
             CardLayout cl = (CardLayout) mainPanel.getLayout();
             cl.show(mainPanel, "Gameplay");
 
+            // Set taruhan pemain
             gameplayPanel.setPlayerBet(selectedHorse, betPoints);
 
             // Start background animation and music for gameplay
