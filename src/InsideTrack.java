@@ -9,11 +9,33 @@ public class InsideTrack extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
 
-        // Masukkan nama pemain dan poin awal
-        String playerName = JOptionPane.showInputDialog("Enter your name:");
-        int initialPoints = 1000; // Default poin awal
+        String username = null;
 
-        Player player = new Player(playerName, initialPoints); // Buat atau ambil pemain dari database
+        while (username == null) {
+            int choice = JOptionPane.showOptionDialog(
+                    null,
+                    "Welcome to Inside Track! Choose an option:",
+                    "Login/Register",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    new String[] { "Login", "Register" },
+                    "Login");
+
+            if (choice == JOptionPane.YES_OPTION) { // Login
+                username = login();
+            } else if (choice == JOptionPane.NO_OPTION) { // Register
+                register();
+            } else {
+                System.exit(0); // Exit if the user closes the dialog
+            }
+        }
+
+        // Masukkan nama pemain dan poin awal
+        // String playerName = JOptionPane.showInputDialog("Enter your name:");
+
+        int initialPoints = PlayerDB.getPlayerPoints(username);
+        Player player = new Player(username, initialPoints);
 
         // Membuat objek Race
         Race race = new Race();
@@ -37,5 +59,63 @@ public class InsideTrack extends JFrame {
     public static void main(String[] args) {
         // Memulai aplikasi
         new InsideTrack();
+    }
+
+    private String login() {
+        String username = JOptionPane.showInputDialog("Enter your username:");
+        String password = JOptionPane.showInputDialog("Enter your password:");
+
+        if (PlayerDB.login(username, password)) {
+            JOptionPane.showMessageDialog(null, "Login successful!");
+
+            // Ambil poin pemain dari database
+            int currentPoints = PlayerDB.getPlayerPoints(username);
+
+            // Tampilkan dialog untuk menambah poin
+            int choice = JOptionPane.showOptionDialog(
+                    null,
+                    "Welcome back, " + username + "!\nYou have " + currentPoints
+                            + " points.\nWould you like to add more points?",
+                    "Add Points",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    new String[] { "Yes", "No" },
+                    "No");
+
+            if (choice == JOptionPane.YES_OPTION) {
+                String pointsInput = JOptionPane.showInputDialog("Enter points to add:");
+                try {
+                    int pointsToAdd = Integer.parseInt(pointsInput);
+                    if (pointsToAdd > 0) {
+                        PlayerDB.updatePlayerPoints(username, currentPoints + pointsToAdd);
+                        JOptionPane.showMessageDialog(null, pointsToAdd + " points added successfully!");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Points must be greater than 0!", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Invalid input! Points not added.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+            return username;
+        } else {
+            JOptionPane.showMessageDialog(null, "Invalid username or password!", "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+
+    private void register() {
+        String username = JOptionPane.showInputDialog("Choose a username:");
+        String password = JOptionPane.showInputDialog("Choose a password:");
+
+        if (PlayerDB.register(username, password)) {
+            JOptionPane.showMessageDialog(null, "Registration successful! You can now log in.");
+        } else {
+            JOptionPane.showMessageDialog(null, "Registration failed! Username might already exist.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
