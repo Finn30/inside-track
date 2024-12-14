@@ -14,6 +14,7 @@ public class LandingPage extends JPanel {
 
     private Clip backgroundMusicClip;
     private Player player;
+    private JLabel pointsLabel; // Add pointsLabel instance variable
 
     public LandingPage(JPanel mainPanel, GameplayPanel gameplayPanel, Player player) {
         this.player = player;
@@ -25,7 +26,7 @@ public class LandingPage extends JPanel {
         JComboBox<String> horseSelection = new JComboBox<>(
                 new String[] { "Horse Green", "Horse Pink", "Horse Purple", "Horse Red", "Horse Brown" });
         JTextField betInput = new JTextField(10);
-        JLabel pointsLabel = new JLabel("Points: " + player.getPoints());
+        pointsLabel = new JLabel("Points: " + player.getPoints()); // Initialize the pointsLabel here
 
         JPanel selectionPanel = new JPanel();
         selectionPanel.add(new JLabel("Select Horse: "));
@@ -54,43 +55,47 @@ public class LandingPage extends JPanel {
                 return;
             }
 
-            // Hentikan musik LandingPage sebelum memulai game
+            // Stop current background music
             stopBackgroundMusic();
 
             // Reset game
             gameplayPanel.resetGame();
 
-            // Ganti panel ke Gameplay
+            // Change panel to Gameplay
             CardLayout cl = (CardLayout) mainPanel.getLayout();
             cl.show(mainPanel, "Gameplay");
 
             gameplayPanel.setPlayerBet(selectedHorse, betPoints);
 
-            // Mulai animasi background dan musik Gameplay setelah GameplayPanel ditampilkan
+            // Start background animation and music for gameplay
             gameplayPanel.startAnimation(mainPanel);
-            gameplayPanel.playGameplayMusic(); // Memulai musik gameplay
+            gameplayPanel.playGameplayMusic(); // Start gameplay music
         });
 
-        // Memutar musik latar belakang
+        // Play landing page music when LandingPage is displayed
         playBackgroundMusic("assets/music/music-landingpage.wav");
     }
 
-    // Method untuk memutar musik
+    // Method to update points display when returning to LandingPage
+    public void updatePointsDisplay() {
+        pointsLabel.setText("Points: " + player.getPoints()); // Update the points label with current points
+    }
+
+    // Method to play background music
     public void playBackgroundMusic(String musicFilePath) {
         Thread musicThread = new Thread(() -> {
             try {
                 File musicFile = new File(musicFilePath);
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(musicFile);
 
-                // Mengubah format audio ke 44.1 kHz, 16-bit stereo jika file menggunakan format
-                // yang tidak didukung
+                // Decode the audio format if necessary
                 AudioFormat baseFormat = audioStream.getFormat();
                 AudioFormat decodedFormat = new AudioFormat(
                         AudioFormat.Encoding.PCM_SIGNED,
                         44100, // Sample rate
                         16, // Bit depth
                         baseFormat.getChannels(),
-                        baseFormat.getChannels() * 2, // Frame size (2 bytes per channel, hence *2)
+                        baseFormat.getChannels() * 2, // Frame size (2 bytes per channel)
                         44100,
                         false // Little endian
                 );
@@ -99,7 +104,7 @@ public class LandingPage extends JPanel {
 
                 backgroundMusicClip = AudioSystem.getClip();
                 backgroundMusicClip.open(decodedAudioStream);
-                backgroundMusicClip.loop(Clip.LOOP_CONTINUOUSLY); // Musik berulang
+                backgroundMusicClip.loop(Clip.LOOP_CONTINUOUSLY); // Loop the music
                 backgroundMusicClip.start();
             } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
                 e.printStackTrace();
@@ -108,12 +113,11 @@ public class LandingPage extends JPanel {
         musicThread.start();
     }
 
-    // Method untuk menghentikan musik saat diperlukan
+    // Method to stop the background music
     private void stopBackgroundMusic() {
         if (backgroundMusicClip != null && backgroundMusicClip.isRunning()) {
             backgroundMusicClip.stop();
             backgroundMusicClip.close();
         }
     }
-
 }
