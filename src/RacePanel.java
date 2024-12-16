@@ -5,7 +5,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
-public class RacePanel extends JPanel implements RaceListener {
+public class RacePanel extends JPanel {
 
     // Declare all the images (12 images in total)
     BufferedImage img1 = null;
@@ -28,7 +28,6 @@ public class RacePanel extends JPanel implements RaceListener {
     public RacePanel(Race race) {
         super();
         this.race = race;
-        this.race.setListener(this); // Set this panel as the listener
 
         try {
             // Load all 12 images

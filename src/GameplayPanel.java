@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class GameplayPanel extends JPanel implements Runnable, RaceListener {
+public class GameplayPanel extends JPanel implements Runnable {
     private JPanel mainPanel;
     private Image backgroundImage;
     private int xPosition; // Posisi X gambar
@@ -27,8 +27,7 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
         this.player = player;
         this.mainPanel = mainPanel;
         this.race = race;
-        this.horses = race.getRunners(); // Ambil daftar kuda
-        this.race.setListener(this); // Set panel ini sebagai listener
+        this.horses = race.getRunners();
 
         // Load gambar background
         ImageIcon icon = new ImageIcon("assets/img/background2.jpg");
@@ -190,22 +189,6 @@ public class GameplayPanel extends JPanel implements Runnable, RaceListener {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void notifyRaceProgress() {
-    }
-
-    @Override
-    public void notifyStatus(String status) {
-        if (status.equals(playerBetHorse)) {
-            player.addPoints(playerBetPoints * 2); // Menang, gandakan poin
-            JOptionPane.showMessageDialog(this, "Congratulations! You win " + (playerBetPoints * 2) + " points!",
-                    "Winner", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            player.subtractPoints(playerBetPoints); // Kalah, poin berkurang
-            JOptionPane.showMessageDialog(this, "You lose! Points deducted: " + playerBetPoints, "Loser",
-                    JOptionPane.WARNING_MESSAGE);
         }
     }
 
