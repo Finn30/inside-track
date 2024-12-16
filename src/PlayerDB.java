@@ -7,7 +7,7 @@ public class PlayerDB {
 
     public static int getPlayerPoints(String username) {
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT points FROM users WHERE username = ?";
+            String query = "SELECT points FROM players WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
@@ -25,7 +25,7 @@ public class PlayerDB {
             points = 0; // Pastikan poin tidak negatif
         }
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "UPDATE users SET points = ? WHERE username = ?";
+            String query = "UPDATE players SET points = ? WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, points);
             statement.setString(2, username);
@@ -38,7 +38,7 @@ public class PlayerDB {
     // Method untuk login
     public static boolean login(String username, String password) {
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+            String query = "SELECT * FROM players WHERE username = ? AND password = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
             statement.setString(2, password);
@@ -53,7 +53,7 @@ public class PlayerDB {
     // Method untuk registrasi
     public static boolean register(String username, String password) {
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "INSERT INTO users (username, password) VALUES (?, ?)";
+            String query = "INSERT INTO players (username, password) VALUES (?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
             statement.setString(2, password);
